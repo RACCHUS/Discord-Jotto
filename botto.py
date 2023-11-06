@@ -9,21 +9,19 @@ from dotenv import load_dotenv
 #TOken
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-print(f'{TOKEN}')
+# print(f'{TOKEN}')
 client = discord.Client(intents=discord.Intents.all())
 
 #Some embedding stuff
-channel = client.get_channel(1169182459611590688)
+channel = client.get_channel(1171036155874123776)
 
-embed = discord.Embed(title="My Title", description="My Description", color=0x0000FF)
-embed.add_field(name="Field Name", value="Field Value")
-embed.set_footer(text="My Footer")
+embed = discord.Embed(title="Jotto Game 1", description="", color=0x0000FF)
 
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord! Woohoo!')
-    channel = client.get_channel(1169182459611590688)
-    await channel.send('https://tenor.com/view/ready-im-ready-running-spongebob-squarepants-gif-4184916')
+    channel = client.get_channel(1171036155874123776)
+    #await channel.send('I\'m ready!')
 
 @client.event
 async def on_member_join(member):
@@ -38,25 +36,26 @@ async def on_message(message):
         return
         
     #print(f'{message.content}')
-    
-    brooklyn_99_quotes = [
-        'I\'m the human form of the 💯 emoji.',
-        'Bingpot!',
-        (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
-        ),
-    ]
 
-    if message.content == '99!':
-        response = random.choice(brooklyn_99_quotes)
-        await message.channel.send(response)
-     
     if message.content == '!break':
         print(f'Break time!')
         await message.channel.send('Break time!')
     
-    if message.content == '!embed':
+    if message.content == '!jotto':
         await message.channel.send(embed=embed)
+
+    if message.content.startswith("!guess"):
+        msg = message.content.split()[1]
+        print(f'{msg}')
+        num_fields = len(embed.fields)
+        # print(num_fields % 3)
+
+        if num_fields % 3 == 0:
+            embed.add_field(name="", value=msg)
+        else:
+            embed.add_field(name="    ", value="    ", inline=True)
+            embed.add_field(name="", value=msg, inline=True)
+        await message.channel.send(embed=embed)
+        
     
 client.run(TOKEN)
